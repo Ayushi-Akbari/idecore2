@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const productModel = require("../product/schema");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -38,14 +37,14 @@ const userSchema = new mongoose.Schema({
     // required: true,
   },
 
-  tokens: [
-    {
-      token: {
-        type: String,
-        required: true,
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
       },
-    },
-  ],
+    ],
 
   favData: [
     {

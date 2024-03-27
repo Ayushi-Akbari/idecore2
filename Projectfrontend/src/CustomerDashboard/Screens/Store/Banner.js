@@ -11,7 +11,7 @@ const Banner = () => {
   return (
     <>
       <div
-        className="h-[40vh]  md:h-screen  w-[100vw]  bg-cover bg-no-repeat bg-top relative flex  items-center justify-center flex-col"
+        className="h-[40vh]   lg:h-screen  w-[100vw]  bg-cover bg-no-repeat bg-top relative flex  items-center justify-center flex-col"
         style={backgroundStyle}
       >
       </div>

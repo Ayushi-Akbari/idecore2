@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import Cookies from "js-cookie";
+// FavoritesContext.js
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const FavoritesContext = createContext();
 
@@ -7,42 +7,34 @@ export const useFavorites = () => useContext(FavoritesContext);
 
 export const FavoritesProvider = ({ children }) => {
   const [favorites, setFavorites] = useState(() => {
-    const cookieData = Cookies.get("favorites");
-    console.log("cookieData : ", cookieData);
-    return cookieData ? JSON.parse(cookieData) : [];
+    // Retrieve favorites from local storage to maintain state across sessions
+    const localData = localStorage.getItem('favorites');
+    return localData ? JSON.parse(localData) : [];
   });
-  console.log("favorites : ", favorites);
-
   const removeFavorite = (id) => {
-    setFavorites(favorites.filter((favorite) => favorite._id !== id));
-  };
+    setFavorites(favorites.filter(favoriteId => favoriteId !== id));
+};
 
   useEffect(() => {
-    // Update cookie when favorites change
-    Cookies.set("favorites", JSON.stringify(favorites), { expires: 7 }); // Expires in 7 days
+    // Update local storage when favorites change
+    localStorage.setItem('favorites', JSON.stringify(favorites));
   }, [favorites]);
 
   // Toggle favorite status
-  // Toggle favorite status
-  const toggleFavorite = (product) => {
+  const toggleFavorite = (productId) => {
     setFavorites((prevFavorites) => {
-      console.log("prevFavorites : ", prevFavorites);
-      const isFavorite = prevFavorites.some(
-        (favProduct) => favProduct._id === product._id
-      );
+      const isFavorite = prevFavorites.includes(productId);
       if (isFavorite) {
         // Remove from favorites
-        return prevFavorites.filter(
-          (favProduct) => favProduct._id !== product._id
-        );
+        return prevFavorites.filter(id => id !== productId);
       } else {
         // Add to favorites
-        return [...prevFavorites, product];
+        return [...prevFavorites, productId];
       }
     });
   };
 
-  const value = { favorites, toggleFavorite, removeFavorite };
+  const value = { favorites, toggleFavorite,removeFavorite};
 
   return (
     <FavoritesContext.Provider value={value}>

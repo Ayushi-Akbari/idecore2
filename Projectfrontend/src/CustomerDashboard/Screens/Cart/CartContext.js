@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import Cookies from "js-cookie";
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext();
 
@@ -9,11 +8,10 @@ export const CartProvider = ({ children }) => {
   const getInitialCart = () => {
     // Try to parse stored cart items; if unsuccessful, return an empty array
     try {
-      // const storedCart = localStorage.getItem("cartItems");
-      const storedCart = Cookies.get("cartItems");
+      const storedCart = localStorage.getItem('cartItems');
       return storedCart ? JSON.parse(storedCart) : [];
     } catch (error) {
-      console.log("Failed to retrieve cart from local storage:", error);
+      console.log('Failed to retrieve cart from local storage:', error);
       return [];
     }
   };
@@ -22,25 +20,15 @@ export const CartProvider = ({ children }) => {
 
   useEffect(() => {
     // Update local storage whenever the cartItems state changes
-    Cookies.set("cartItems", JSON.stringify(cartItems), { expires: 7 });
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
   }, [cartItems]);
-
-  const getCartData = () => {
-    const cartCookieString = Cookies.get("cartItems");
-    const cartCookie = cartCookieString ? JSON.parse(cartCookieString) : [];
-    return cartCookie;
-  };
 
   const addToCart = (product, quantity) => {
     setCartItems((prevItems) => {
-      console.log("prevItems : ", prevItems);
-      const itemExists = prevItems.find((item) => item._id === product._id);
-      console.log("itemExists : ", itemExists);
+      const itemExists = prevItems.find((item) => item.id === product.id);
       if (itemExists) {
         return prevItems.map((item) =>
-          item._id === product._id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
+          item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
         );
       } else {
         return [...prevItems, { ...product, quantity }];
@@ -49,30 +37,20 @@ export const CartProvider = ({ children }) => {
   };
 
   const calculateTotal = () => {
-    return cartItems
-      .reduce((acc, item) => acc + item.quantity * item.price, 0)
-      .toFixed(2);
+    return cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0).toFixed(2);
   };
 
   const removeFromCart = (productId) => {
-    console.log("productId : ", productId);
-    setCartItems(cartItems.filter((item) => item._id !== productId));
+    setCartItems(cartItems.filter((item) => item.id !== productId));
   };
 
-  // const updateQuantity = (productId, quantity) => {
-  //   setCartItems(
-  //     cartItems.map((item) =>
-  //       item.id === productId ? { ...item, quantity } : item
-  //     )
-  //   );
-  // };
+  const updateQuantity = (productId, quantity) => {
+    setCartItems(cartItems.map((item) => (item.id === productId ? { ...item, quantity } : item)));
+  };
 
-  const updateQuantity = (id, quantity) => {
-    console.log("id and quamtity : ", id, quantity);
-    setCartItems(
-      cartItems.map((item) =>
-        item._id === id ? { ...item, quantity: quantity } : item
-      )
+  const updateItemQuantity = (id, quantity) => {
+    setCartItems((currentItems) =>
+      currentItems.map((item) => (item.id === id ? { ...item, quantity: quantity } : item))
     );
   };
 
@@ -88,9 +66,8 @@ export const CartProvider = ({ children }) => {
         calculateTotal,
         updateQuantity,
         removeFromCart,
-        // updateItemQuantity,
+        updateItemQuantity,
         clearCart,
-        getCartData,
       }}
     >
       {children}

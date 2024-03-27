@@ -172,9 +172,8 @@ router.get("/product/:id", async (req, res) => {
   }
 });
 
-router.put("/product/:id", auth, uploadMultiple, async (req, res) => {
+router.put("/product/:id", auth, async (req, res) => {
   try {
-    console.log(req.params.id);
     console.log("req.body : ", req.body);
     const cName = await categoryModel.findOne({ name: req.body.category });
     console.log("cName : ", cName);
@@ -190,7 +189,7 @@ router.put("/product/:id", auth, uploadMultiple, async (req, res) => {
       {
         title: req.body.title,
         description: req.body.description,
-        image_url: req.files.map((item) => item.filename),
+        // image_url: req.files.map((item) => item.filename),
         price: req.body.price,
         stocks: req.body.stocks,
         categoryId: cName._id,

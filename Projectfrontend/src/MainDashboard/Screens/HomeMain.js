@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import mainbg from '../Images/Banner.png';
-import Navbar from '../Components/NavBar';
 
 const HomeMain = () => {
   const navigate = useNavigate();
