@@ -1,45 +1,87 @@
-import React, { useState, useEffect } from 'react';
-import items from '../../items';
-import ProductFilters from './ProductFilter'; 
-import ProductList from './ProductList'; 
+import React, { useState, useEffect } from "react";
+import items from "../../items";
+import ProductFilters from "./ProductFilter";
+import ProductList from "./ProductList";
+import axios from "axios";
 
 const Products = () => {
-  const [categoryFilter, setCategoryFilter] = useState('');
-  const [sortPrice, setSortPrice] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [sortPrice, setSortPrice] = useState("");
   const [ratingFilter, setRatingFilter] = useState(0);
   const [uniqueCategories, setUniqueCategories] = useState([]);
-  let allProducts = [];
+  const [allProducts, setAllProducts] = useState([]);
+  // let allProducts = [];
 
   useEffect(() => {
-    const categories = new Set();
-    items.forEach(item => {
-      item.categories.forEach(category => {
-        categories.add(category.name);
+    axios
+      .get(
+        "http://localhost:4001/product/"
+        // , {
+        // headers: {
+        //   Authorization: `Bearer ${userCookie}`,
+        // },
+        // }
+      )
+      .then((res) => {
+        console.log(res.data.data);
+        console.log(`data:image/jpeg;base64,${res.data.data[0].image_url}`);
+        setAllProducts(res.data.data);
+      })
+      .catch((e) => {
+        console.log(e);
       });
-    });
-    setUniqueCategories(Array.from(categories));
   }, []);
 
-  items.forEach(item => {
-    item.categories.forEach(category => {
-      if (!categoryFilter || category.name === categoryFilter) {
-        allProducts = allProducts.concat(category.products);
-      }
-    });
-  });
+  useEffect(() => {
+    axios
+      .post("http://localhost:4001/filterByCategory/", {
+        categoryFilter: categoryFilter,
+      })
+      .then((res) => {
+        // console.log("allProductsddss", res.data);
+        setAllProducts(res.data.data);
+        // console.log("allProducts : ", allProducts);
+      })
+      .catch((err) => {});
+  }, [categoryFilter]);
 
-  if (ratingFilter) {
-    allProducts = allProducts.filter(product => product.rating >= ratingFilter);
-  }
+  useEffect(() => {
+    axios
+      .post("http://localhost:4001/filterByRating/", {
+        ratingFilter: ratingFilter,
+      })
+      .then((res) => {
+        console.log("ratingFilter ", res.data);
+        setAllProducts(res.data.data);
+        // console.log("allProducts : ", allProducts);
+      })
+      .catch((err) => {});
+  }, [ratingFilter]);
 
-  if (sortPrice === 'high-to-low') {
-    allProducts.sort((a, b) => b.price - a.price);
-  } else if (sortPrice === 'low-to-high') {
-    allProducts.sort((a, b) => a.price - b.price);
+  // console.log("sortPrice : ", sortPrice);
+
+  useEffect(() => {
+    axios
+      .post("http://localhost:4001/filterByPrice/", {
+        sortPrice: sortPrice,
+      })
+      .then((res) => {
+        // console.log("ratingFilter ", res.data);
+
+        setAllProducts(res.data.data);
+        // console.log("allProducts : ", allProducts);
+      })
+      .catch((err) => {
+        console.log("error : ", err);
+      });
+  }, [sortPrice]);
+
+  if (!allProducts) {
+    return <p>No products available</p>;
   }
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: "flex" }}>
       <ProductFilters
         uniqueCategories={uniqueCategories}
         setCategoryFilter={setCategoryFilter}
