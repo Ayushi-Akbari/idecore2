@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const sellerModel = require("../Seller_user/schema");
 const { json } = require("express");
 const { log } = require("console");
+// hii drashti
 
 const auth = async (req, res, next) => {
   try {
@@ -21,7 +22,7 @@ const auth = async (req, res, next) => {
     console.log("verifyUser : ", verifyUser);
 
     const user = await sellerModel.findByIdAndUpdate({ _id: verifyUser._id });
-    console.log("user : ",user);
+    console.log("user : ", user);
     if (!user) {
       res.status(400).send("you are not authenticate");
     }
