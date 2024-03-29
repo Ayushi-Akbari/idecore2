@@ -24,17 +24,17 @@ export default function Navbar() {
         <div className={`${isOpen ? "block" : "hidden"} md:block`}>
           <ul className="flex flex-col md:flex-row md:space-x-8 md:mt-0 md:text-base md:font-medium">
             <li>
-              <Link to="/MainDashboard/home" className={`block py-2 pr-4 pl-3 text-white rounded hover:bg-[rgba(73,47,29,0.4)] md:hover:bg-transparent md:border-0 md:hover:text-white md:p-0 ${isActive('/MainDashboard/home') ? 'bg-[#49372B]' : ''}`}>
+              <Link to="/MainDashboard/home" className={`block py-2 pr-4 pl-3 text-white rounded hover:bg-[rgba(73,47,29,0.4)] md:hover:bg-transparent md:border-0 md:hover:text-white md:p-0 ${isActive('/MainDashboard/home') ? 'font-bold' : ''}`}>
                 Home
               </Link>
             </li>
             <li>
-              <Link to="/MainDashboard/AboutUs" className={`block py-2 pr-4 pl-3 text-white rounded hover:bg-[rgba(73,47,29,0.4)] md:hover:bg-transparent md:border-0 md:hover:text-white md:p-0 ${isActive('/MainDashboard/AboutUs') ? 'bg-[#49372B]' : ''}`}>
+              <Link to="/MainDashboard/AboutUs" className={`block py-2 pr-4 pl-3 text-white rounded hover:bg-[rgba(73,47,29,0.4)] md:hover:bg-transparent md:border-0 md:hover:text-white md:p-0 ${isActive('/MainDashboard/AboutUs') ? 'font-bold' : ''}`}>
                 About
               </Link>
             </li>
             <li>
-              <Link to="/MainDashboard/Contactus" className={`block py-2 pr-4 pl-3 text-white rounded hover:bg-[rgba(73,47,29,0.4)] md:hover:bg-transparent md:border-0 md:hover:text-white md:p-0 ${isActive('/MainDashboard/Contactus') ? 'bg-[#49372B]' : ''}`}>
+              <Link to="/MainDashboard/Contactus" className={`block py-2 pr-4 pl-3 text-white rounded hover:bg-[rgba(73,47,29,0.4)] md:hover:bg-transparent md:border-0 md:hover:text-white md:p-0 ${isActive('/MainDashboard/Contactus') ? 'font-bold' : '' }`}>
                 Contact Us
               </Link>
             </li>

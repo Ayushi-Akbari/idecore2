@@ -8,7 +8,6 @@ const Products = () => {
   const [sortPrice, setSortPrice] = useState('');
   const [ratingFilter, setRatingFilter] = useState(0);
   const [uniqueCategories, setUniqueCategories] = useState([]);
-  let allProducts = [];
 
   useEffect(() => {
     const categories = new Set();
@@ -20,10 +19,11 @@ const Products = () => {
     setUniqueCategories(Array.from(categories));
   }, []);
 
+  let allProducts = [];
   items.forEach(item => {
     item.categories.forEach(category => {
       if (!categoryFilter || category.name === categoryFilter) {
-        allProducts = allProducts.concat(category.products);
+        allProducts = [...allProducts, ...category.products];
       }
     });
   });
@@ -39,7 +39,7 @@ const Products = () => {
   }
 
   return (
-    <div className='flex flex-col lg:flex-row'>
+    <div className='flex flex-col lg:flex-row max-w-screen'>
       <ProductFilters
         uniqueCategories={uniqueCategories}
         setCategoryFilter={setCategoryFilter}

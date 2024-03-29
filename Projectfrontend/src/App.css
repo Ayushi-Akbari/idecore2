@@ -12,6 +12,10 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
+.app-container {
+  max-width: 100%; /* Ensures the container doesn't exceed the width of its parent */
+  overflow-x: hidden; /* Hides horizontal scrollbar if content exceeds container width */
+}
 
 .App-header {
   background-color: #282c34;

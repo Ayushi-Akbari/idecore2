@@ -17,6 +17,7 @@ import LoginScreen from '../LoginRegister/Login';
 import { FavoritesProvider } from '../Screens/FavScreens/FavouriteContext';
 import { CartProvider } from '../Screens/Cart/CartContext';
 import SearchResults from '../components/SearchResults';
+import Contactus from '../Screens/ContactUs/Contactus';
 const MainRoute = () => {
   return (
     <CartProvider>
@@ -37,6 +38,7 @@ const MainRoute = () => {
         <Route path="/FavScreen" element={<FavScreen/>} />
         <Route path="/CartScreen" element={<CartScreen/>} />
         <Route path="/LoginScreen" element={<LoginScreen/>} />
+        <Route path="/ContactUs" element={<Contactus/>} />
         <Route path="/search-results" element={<SearchResults />} />
 
 

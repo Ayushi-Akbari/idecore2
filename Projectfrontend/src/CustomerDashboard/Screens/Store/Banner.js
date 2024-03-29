@@ -2,20 +2,23 @@ import React from "react";
 import mainbg from "../../images/store.png";
 
 const Banner = () => {
-  // For dynamic backgroundImage with Tailwind CSS, you can still use inline styles for this specific property
-  // or alternatively handle it through global styles or a CSS module where you define custom classes
   const backgroundStyle = {
     backgroundImage: `url(${mainbg})`,
+    overflowX: "hidden",
+  };
+
+  const innerContainerStyle = {
+    maxWidth: "100vw", 
   };
 
   return (
-    <>
-      <div
-        className="h-[40vh]   lg:h-screen  w-[100vw]  bg-cover bg-no-repeat bg-top relative flex  items-center justify-center flex-col"
-        style={backgroundStyle}
-      >
+    <div
+      className="h-[40vh] lg:h-screen w-screen bg-cover bg-no-repeat bg-top flex items-center justify-center"
+      style={backgroundStyle}
+    >
+      <div style={innerContainerStyle}>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -31,7 +31,7 @@ export default function SellerNavbar() {
 
   return (
     <nav className="bg-[rgba(73,47,29,1)] relative w-full z-20 top-0 start-0">
-      <div className="max-w-screen-xl flex items-center justify-between md:justify-start mx-auto px-6 py-3">
+      <div className="max-w-screen px-6 flex items-center justify-between md:justify-start mx-auto  py-3">
         <Link to="/" className="flex items-center space-x-3">
           <img src={logo} alt="Logo" className="h-16 w-16 object-contain rounded-lg border-2 border-[#49372B]" />
         </Link>

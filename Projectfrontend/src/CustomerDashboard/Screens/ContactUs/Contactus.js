@@ -1,5 +1,5 @@
 import React from 'react'
-import ContactUs from '../../CustomerDashboard/Screens/HomeScreen/Contectus'
+import ContactUs from '../HomeScreen/Contectus'
 import ContactForm from './ContactUsForm'
 const Contactus = () => {
   return (
