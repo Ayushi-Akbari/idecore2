@@ -5,6 +5,7 @@ const ProductModel = require("../product/schema");
 const UserModel = require("../User/schema");
 // const auth = require("../authorization/user_auth");
 const user_auth = require("../authorization/user_auth");
+const mongoose = require("mongoose");
 
 router.use(express.json());
 
@@ -14,77 +15,68 @@ router.post("/cart", user_auth, async (req, res) => {
     const product = req.body.product;
     const quantity = req.body.quantity;
     const price = req.body.product.price;
-
     const subTotal = quantity * price;
-    console.log("product : ", product);
 
-    const userExists = await cartModel.findOne({ user: userId });
+    // Find the user's cart
+    let userCart = await cartModel.findOne({ user: userId });
+    console.log("userCart : ", userCart);
 
-    if (userExists) {
-      const existingItemIndex = userExists.items.findIndex(
-        (item) => item.productId === req.body.product._id
-      );
-
-      if (existingItemIndex !== -1) {
-        // If the product already exists in the cart, update quantity and subtotal
-        userExists.items[existingItemIndex].quantity += quantity;
-        userExists.items[existingItemIndex].subTotal =
-          userExists.items[existingItemIndex].subTotal +
-          quantity * req.body.product.price;
-      } else {
-        // If the product does not exist, add a new item
-        userExists.items.unshift({
-          image_url: req.body.product.image_url[0],
-          productId: req.body.product._id,
-          product: req.body.product.title,
-          quantity: quantity,
-          price: req.body.product.price,
-          subTotal: subTotal,
-        });
-      }
-
-      // Update total based on the updated or newly added item
-      userExists.total = userExists.items.reduce((acc, item) => {
-        return acc + item.subTotal;
-      }, 0);
-
-      const updatedUser = await userExists.save();
-
-      return res.status(200).send({
-        data: updatedUser,
-        status: 200,
-        message: "Cart updated successfully",
-      });
-    } else {
-      // If the user does not exist, create a new entry
-      const newCart = await cartModel({
+    if (!userCart) {
+      // If the user doesn't have a cart, create a new one
+      userCart = new cartModel({
         user: userId,
-        items: [
-          {
-            image_url: req.body.product.image_url[0],
-            productId: req.body.product._id,
-            product: req.body.product.title,
-            quantity: req.body.quantity,
-            price: req.body.product.price,
-            subTotal: subTotal,
-          },
-        ],
-        total: subTotal, // Initial total based on the new item
-      });
-
-      // console.log("savedCart : ", newCart);
-
-      const savedCart = await newCart.save();
-
-      return res.status(201).send({
-        data: savedCart,
-        status: 201,
-        message: "Cart created successfully",
+        items: [],
+        total: 0,
       });
     }
-  } catch (e) {
-    return res.status(500).send({
-      data: e,
+
+    console.log("userCart after: ", userCart);
+
+    // Check if the product already exists in the cart
+    const existingItemIndex = userCart.items.findIndex(
+      (item) => item.productId.toString() === product._id.toString()
+    );
+    console.log("existingItemIndex : ", existingItemIndex);
+
+    if (existingItemIndex !== -1) {
+      // If the product already exists in the cart, update quantity and subtotal
+      userCart.items[existingItemIndex].quantity += quantity;
+      userCart.items[existingItemIndex].subTotal +=
+        quantity * req.body.product.price;
+    } else {
+      // If the product does not exist, add a new item
+      userCart.items.push({
+        image_url: req.body.product.image_url[0],
+        productId: new mongoose.Types.ObjectId(req.body.product._id),
+        product: req.body.product.title,
+        quantity: quantity,
+        price: req.body.product.price,
+        subTotal: subTotal,
+      });
+    }
+
+    console.log("usercart 3: ", userCart);
+
+    // Update total based on the updated or newly added item
+    userCart.total = userCart.items.reduce((acc, item) => {
+      return acc + item.subTotal;
+    }, 0);
+
+    // Save the cart
+    console.log("usercart 4: ", userCart);
+    const savedCart = await userCart.save();
+
+    console.log("savedCart : ", savedCart);
+
+    return res.status(200).json({
+      data: savedCart,
+      status: 200,
+      message: "Cart updated successfully",
+    });
+  } catch (error) {
+    console.error("Error adding item to cart:", error);
+    return res.status(500).json({
+      data: error,
       status: 500,
       message: "Internal Server Error",
     });

@@ -19,12 +19,12 @@ router.post(
   // multer.multiple("image_url"),
   async (req, res) => {
     try {
-      console.log(req.body);
+      // console.log(req.body);
       console.log("image  : ", req.user, req.body.category);
       const categoryData = await categoryModel.findOne({
         name: req.body.category,
       });
-      console.log("categoryData : ", categoryData);
+      // console.log("categoryData : ", categoryData);
       console.log("imagdsdse : ", req, req.file, req.files);
       const product = await ProductModel({
         // categoryName: req.body.category,
@@ -38,7 +38,7 @@ router.post(
       });
 
       const productData = await product.save();
-      console.log("productData : ", productData);
+      // console.log("productData : ", productData);
       return res.status(201).send({
         data: null,
         status: 200,
@@ -52,10 +52,10 @@ router.post(
 );
 
 router.get("/seller_product", auth, async (req, res) => {
-  console.log(req.user);
+  // console.log(req.user);
 
   const productData = await ProductModel.find({ userId: req.user._id });
-  console.log(productData);
+  // console.log(productData);
 
   if (!productData) {
     return res.send({
@@ -129,7 +129,7 @@ router.get("/product/:id", async (req, res) => {
         "atuhjiokbvdftghyujgdefghyjbcfhhgds"
       );
 
-      console.log("verifyUser : ", verifyUser);
+      // console.log("verifyUser : ", verifyUser);
 
       const userData = await userModel.findById(verifyUser._id);
       // console.log("userData : ", userData);
@@ -225,8 +225,33 @@ router.put("/product/:id", auth, async (req, res) => {
 
 router.delete("/product/:id", auth, async (req, res) => {
   try {
+    console.log("_______________________________515");
+
     console.log(req.params.id);
     const deleteProduct = await ProductModel.findByIdAndDelete(req.params.id);
+    const userData = await userModel.find();
+
+    userData.forEach(async (item) => {
+      item.favData = item.favData.filter((data) => {
+        return data.product.toString() !== req.params.id.toString();
+      });
+      await item.save();
+    });
+
+    const CartData = await cartModel.find();
+
+    CartData.forEach(async (data) => {
+      data.items = data.items.filter((item) => {
+        return item.productId.toString() !== req.params.id.toString();
+      });
+
+      data.total = data.items.reduce((acc, item) => acc + item.subTotal, 0);
+      await data.save();
+    });
+
+    // console.log("userData : ", userData);
+
+    console.log("_______________________________");
     if (!deleteProduct) {
       return res.status(400).send({
         data: null,
@@ -248,5 +273,10 @@ router.delete("/product/:id", auth, async (req, res) => {
     });
   }
 });
+
+// router.delete("/product/:id", auth, async (req, res) => {
+//   console.log("hiii");
+//   console.log(req.params.id);
+// });
 
 module.exports = router;
